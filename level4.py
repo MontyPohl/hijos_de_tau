@@ -9,6 +9,7 @@ from powerup import PowerUpManager
 
 class Level4Screen(ScreenBase):
     def __init__(self, manager):
+
         self.manager = manager
         self.GAME = GAME
         self.player = GAME.player
@@ -60,7 +61,7 @@ class Level4Screen(ScreenBase):
             WIDTH - 140,
             HEIGHT // 2 - 40,
             name="Luison",
-            hp=100,
+            hp=600,
             speed=110,
             w=230,
             h=230,
@@ -240,7 +241,7 @@ class Level4Screen(ScreenBase):
 
             # pygame.draw.rect(surf, (255, 0, 0), self.boss.rect(), 2)# esta linea dibuja la hitbox debe estar aca para funcionar
 
-            max_hp = 380
+            max_hp = 600
             ratio = max(0, min(1, self.boss.hp / max_hp))
             pygame.draw.rect(surf, (60, 0, 0), (WIDTH // 2 - 170, 50, 340, 24))
             pygame.draw.rect(
