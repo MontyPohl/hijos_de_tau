@@ -40,16 +40,14 @@ class Level3Screen(ScreenBase):
                 hp=80,
                 speed=80,
             )
-
+            e.facing_right = False
             e.w, e.h = 110, 110
             e.hitbox_offset_x = 20
             e.hitbox_offset_y = 18
             e.hitbox_width_reduce = 70
             e.hitbox_height_reduce = 20
-
             e.anim_timer = 0
             e.current_frame = 0
-            e.facing_right = False
             self.enemies.append(e)
 
         # === JEFE: Jasy Jatere ===
@@ -63,6 +61,11 @@ class Level3Screen(ScreenBase):
             h=220,
         )
         self.boss.facing_right = False
+
+        self.boss.hitbox_offset_x = 80
+        self.boss.hitbox_offset_y = 40
+        self.boss.hitbox_width_reduce = 180
+        self.boss.hitbox_height_reduce = 60
 
         self.boss_frames = []
         for i in range(1, 4):
@@ -120,8 +123,7 @@ class Level3Screen(ScreenBase):
                 atk = self.player.attack()
                 if atk:
                     damage = getattr(self.player, "attack_damage", 30)
-                    targets = self.enemies + ([self.boss] if self.boss_active else [])
-                    for e in targets:
+                    for e in self.enemies + ([self.boss] if self.boss_active else []):
                         if atk.colliderect(e.rect()):
                             if getattr(self.player, "sonido_golpe", None):
                                 self.player.sonido_golpe.play()
@@ -136,6 +138,8 @@ class Level3Screen(ScreenBase):
                 self.manager.push(Level4Screen(self.manager))
 
     def update(self, dt):
+        self.powerup_manager.update(dt, self.player)
+
         if not self.started:
             self.countdown -= dt
             self.text_alpha = min(255, self.text_alpha + dt * 80)
@@ -170,10 +174,10 @@ class Level3Screen(ScreenBase):
             if e.hp > 0:
                 vivos.append(e)
         self.enemies = vivos
-
+        # activar jefe
         if not self.enemies and not self.boss_active:
             self.boss_active = True
-
+        # jefe
         if self.boss_active and self.boss.hp > 0:
             self.boss.update(dt, self.player)
 
@@ -226,7 +230,8 @@ class Level3Screen(ScreenBase):
                 img = pygame.transform.flip(img, True, False)
             surf.blit(img, (self.boss.x, self.boss.y))
 
-            max_hp = 280
+            pygame.draw.rect(surf, (255, 0, 0), self.boss.rect(), 2)
+            max_hp = 480
             ratio = max(0, min(1, self.boss.hp / max_hp))
             pygame.draw.rect(surf, (50, 0, 0), (WIDTH // 2 - 165, 50, 330, 26))
             pygame.draw.rect(
